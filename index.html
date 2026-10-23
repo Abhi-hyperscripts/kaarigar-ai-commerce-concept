@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en" data-mode="ai" class="intro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kaarigar · Handmade, Found for You</title>
+<meta name="description" content="Concept: a handicraft store where an AI concierge learns your taste and throws your match on a potter's wheel, with a classic store one toggle away.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1d140f">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M20 8h24l-3 8c8 5 12 13 12 22 0 12-9 20-21 20S11 50 11 38c0-9 4-17 12-22z' fill='%23c4673a'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --walnut: #1d140f; --walnut-2: #2a1d15; --walnut-3: #3a2a1f;
+    --linen: #f6efe4; --linen-2: #ece2d3; --card: #fffaf2;
+    --ink: #241913; --ink-2: #6b5a4c; --ink-3: #9a8878;
+    --cream: #f3e6d0; --cream-2: rgba(243, 230, 208, 0.72); --cream-3: rgba(243, 230, 208, 0.48);
+    --clay: #c4673a; --clay-deep: #9c4a24; --indigo: #2b3d78; --indigo-2: #4a62b3; --brass: #c99a3c;
+    --line-d: rgba(243, 230, 208, 0.14); --line-l: rgba(36, 25, 19, 0.12);
+    --display: "Fraunces", Georgia, serif; --body: "Manrope", system-ui, -apple-system, sans-serif;
+    --gutter: clamp(16px, 5vw, 80px);
+    --ai: linear-gradient(120deg, #c4673a, #d98b4a 40%, #6d7fd6);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--walnut); color: var(--cream); font: 400 16px/1.65 var(--body); overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; }
+  img { display: block; max-width: 100%; }
+
+  #stage { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100lvh; display: block; z-index: 0; touch-action: pan-y; }
+  .studio-veil { position: fixed; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(90% 70% at 50% 40%, transparent 50%, rgba(10, 6, 4, 0.55)); }
+
+  /* ---------- nav ---------- */
+  .nav { position: fixed; inset: 0 0 auto 0; z-index: 40; display: flex; align-items: center; gap: 24px; padding: 14px var(--gutter); transition: background .4s, border-color .4s, color .4s; border-bottom: 1px solid transparent; }
+  .nav.solid { background: rgba(29, 20, 15, 0.82); backdrop-filter: blur(14px); border-bottom-color: var(--line-d); }
+  .nav.light { background: rgba(246, 239, 228, 0.9); color: var(--ink); border-bottom-color: var(--line-l); }
+  .logo { display: flex; align-items: center; gap: 10px; font: 600 1.35rem/1 var(--display); letter-spacing: -0.01em; }
+  .logo svg { width: 28px; height: 28px; }
+  .logo small { font: 500 0.6rem/1 var(--body); letter-spacing: 0.24em; text-transform: uppercase; opacity: .6; display: block; margin-top: 4px; }
+  .nav .links { display: flex; gap: 22px; font-size: 0.88rem; font-weight: 500; opacity: .85; }
+  .nav .links a:hover { opacity: 1; color: var(--clay); }
+  .nav .right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .ibtn { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; border: 1px solid currentColor; border-color: color-mix(in srgb, currentColor 22%, transparent); position: relative; background: none; cursor: pointer; }
+  .ibtn svg { width: 17px; height: 17px; }
+  .ibtn .badge { position: absolute; top: -3px; right: -3px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--clay); color: #fff; font: 700 0.62rem/18px var(--body); text-align: center; transform: scale(0); transition: transform .3s cubic-bezier(.3,1.6,.5,1); }
+  .ibtn .badge.on { transform: scale(1); }
+
+  /* the AI toggle */
+  .toggle { display: flex; align-items: center; gap: 10px; padding: 5px 6px 5px 14px; border-radius: 999px; border: 1px solid color-mix(in srgb, currentColor 22%, transparent); cursor: pointer; background: none; user-select: none; }
+  .toggle .lbl { font: 600 0.78rem/1 var(--body); letter-spacing: 0.02em; white-space: nowrap; }
+  .toggle .lbl i { font-style: normal; opacity: .55; font-weight: 500; }
+  .toggle .sw { width: 46px; height: 28px; border-radius: 14px; background: rgba(127,127,127,.35); position: relative; transition: background .35s; }
+  .toggle .sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.3); transition: transform .4s cubic-bezier(.3,1.4,.5,1); }
+  [data-mode="ai"] .toggle .sw { background: var(--ai); box-shadow: 0 0 18px rgba(196,103,58,.55); }
+  [data-mode="ai"] .toggle .sw::after { transform: translateX(18px); }
+  .spark { width: 14px; height: 14px; }
+  [data-mode="ai"] .toggle .spark { color: #e7a35c; animation: twinkle 2.4s ease-in-out infinite; }
+  @keyframes twinkle { 50% { transform: rotate(18deg) scale(1.15); } }
+
+  /* ---------- shared type ---------- */
+  .eyebrow { font: 600 0.7rem/1 var(--body); letter-spacing: 0.28em; text-transform: uppercase; color: var(--clay); display: inline-flex; gap: 10px; align-items: center; }
+  .eyebrow::before { content: ""; width: 26px; height: 1px; background: currentColor; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 500; margin: 0; letter-spacing: -0.015em; font-variation-settings: "opsz" 120; }
+  h1 { font-size: clamp(2.6rem, 5.4vw, 4.9rem); line-height: 1.02; margin: 18px 0; }
+  h2 { font-size: clamp(2rem, 3.8vw, 3.3rem); line-height: 1.06; margin: 16px 0 14px; }
+  h1 em, h2 em { font-style: italic; color: var(--clay); }
+  .lede { font-size: 1.04rem; color: var(--cream-2); margin: 0 0 14px; max-width: 520px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 50px; padding: 0 24px; border-radius: 999px; font: 600 0.88rem/1 var(--body); border: 0; cursor: pointer; white-space: nowrap; transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s, background .3s; }
+  .btn-clay { background: var(--clay); color: #fff; box-shadow: 0 12px 30px -12px rgba(196,103,58,.8); }
+  .btn-clay:hover { transform: translateY(-2px); background: #cf7346; }
+  .btn-ai { background: var(--ai); color: #fff; box-shadow: 0 12px 34px -10px rgba(196,103,58,.7); }
+  .btn-ai:hover { transform: translateY(-2px); }
+  .btn-ghost { background: transparent; border: 1px solid var(--line-d); color: var(--cream); }
+  .btn-ghost:hover { border-color: var(--cream-2); }
+  .btn-sm { height: 38px; padding: 0 16px; font-size: 0.8rem; }
+
+  /* ---------- hero ---------- */
+  main { position: relative; z-index: 5; }
+  .hero { min-height: 100vh; min-height: 100svh; display: grid; grid-template-columns: minmax(0, 560px) 1fr; align-items: center; padding: 110px var(--gutter) 60px; gap: 40px; }
+  .hero-copy { position: relative; }
+  .mode-ai, .mode-classic { transition: opacity .5s ease, transform .6s cubic-bezier(.2,.7,.2,1); }
+  [data-mode="ai"] .mode-classic, [data-mode="classic"] .mode-ai { display: none; }
+  .stats { display: flex; gap: 30px; margin-top: 28px; }
+  .stats b { display: block; font: 500 1.8rem/1 var(--display); color: var(--cream); }
+  .stats span { font-size: 0.74rem; color: var(--cream-3); }
+  .cat-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+  .pill { padding: 9px 15px; border-radius: 999px; border: 1px solid var(--line-d); font-size: 0.8rem; color: var(--cream-2); cursor: pointer; background: none; transition: all .25s; }
+  .pill:hover, .pill.on { border-color: var(--clay); color: var(--cream); background: rgba(196,103,58,.14); }
+
+  /* the concierge */
+  .concierge { margin-top: 22px; border-radius: 26px; background: rgba(42, 29, 21, 0.72); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--line-d); padding: 8px; box-shadow: 0 30px 80px -40px rgba(0,0,0,.8); }
+  .c-tabs { display: flex; gap: 4px; padding: 4px; }
+  .c-tabs button { flex: 1; height: 40px; border-radius: 14px; border: 0; background: none; cursor: pointer; font-weight: 600; font-size: 0.82rem; color: var(--cream-3); transition: all .25s; }
+  .c-tabs button.on { background: rgba(243,230,208,.08); color: var(--cream); }
+  .c-body { padding: 14px 14px 16px; }
+  .ask { position: relative; }
+  .ask textarea { width: 100%; min-height: 96px; resize: none; border-radius: 18px; border: 1px solid var(--line-d); background: rgba(0,0,0,.22); color: var(--cream); font: 400 0.98rem/1.5 var(--body); padding: 16px 16px 48px; outline: none; transition: border-color .25s, box-shadow .25s; }
+  .ask textarea:focus { border-color: rgba(217,139,74,.7); box-shadow: 0 0 0 4px rgba(196,103,58,.15); }
+  .ask textarea::placeholder { color: var(--cream-3); }
+  .ask .go { position: absolute; right: 8px; bottom: 8px; }
+  .examples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .examples button { border: 1px dashed var(--line-d); background: none; color: var(--cream-2); padding: 6px 11px; border-radius: 999px; font-size: 0.74rem; cursor: pointer; transition: all .2s; }
+  .examples button:hover { border-color: var(--clay); color: var(--cream); }
+  .understood { display: none; flex-wrap: wrap; gap: 6px; margin-top: 12px; align-items: center; font-size: 0.74rem; color: var(--cream-3); }
+  .understood.on { display: flex; }
+  .tag { display: inline-flex; align-items: center; gap: 6px; padding: 5px 6px 5px 11px; border-radius: 999px; background: rgba(196,103,58,.16); border: 1px solid rgba(196,103,58,.4); color: var(--cream); font-size: 0.74rem; }
+  .tag button { border: 0; background: rgba(0,0,0,.25); width: 18px; height: 18px; border-radius: 50%; cursor: pointer; font-size: 0.7rem; line-height: 1; color: var(--cream-2); }
+  /* quiz */
+  .quiz .q { display: none; }
+  .quiz .q.on { display: block; animation: rise .5s cubic-bezier(.2,.7,.2,1); }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+  .quiz .qh { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .quiz .qh b { font: 500 1.15rem/1.3 var(--display); }
+  .quiz .qh span { font-size: 0.72rem; color: var(--cream-3); letter-spacing: 0.1em; }
+  .opts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .opt { text-align: left; padding: 12px 12px; border-radius: 14px; border: 1px solid var(--line-d); background: rgba(0,0,0,.18); cursor: pointer; font-size: 0.82rem; color: var(--cream-2); transition: all .2s; display: flex; flex-direction: column; gap: 8px; }
+  .opt:hover { border-color: rgba(217,139,74,.6); color: var(--cream); }
+  .opt.on { border-color: var(--clay); background: rgba(196,103,58,.18); color: var(--cream); }
+  .opt .sw { display: flex; gap: 3px; }
+  .opt .sw i { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(255,255,255,.2); }
+  .qnav { display: flex; justify-content: space-between; margin-top: 14px; align-items: center; }
+  .dots { display: flex; gap: 6px; }
+  .dots i { width: 22px; height: 3px; border-radius: 2px; background: var(--line-d); transition: background .3s; }
+  .dots i.on { background: var(--clay); }
+
+  /* matches under the concierge */
+  .matches { display: none; margin-top: 18px; }
+  .matches.on { display: block; }
+  .matches .mh { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+  .matches .mh b { font: 500 1.1rem/1 var(--display); }
+  .matches .mh a { font-size: 0.76rem; color: var(--clay); cursor: pointer; }
+  .rail { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .mcard { border-radius: 16px; overflow: hidden; background: rgba(243,230,208,.06); border: 1px solid var(--line-d); cursor: pointer; transition: transform .35s cubic-bezier(.2,.8,.2,1), border-color .3s; animation: rise .6s both; animation-delay: calc(var(--i) * 80ms); position: relative; }
+  .mcard:hover, .mcard.on { transform: translateY(-4px); border-color: rgba(217,139,74,.65); }
+  .mcard img { aspect-ratio: 1; object-fit: cover; width: 100%; background: var(--walnut-3); }
+  .mcard .mi { padding: 8px 10px 10px; }
+  .mcard .mi b { display: block; font-size: 0.76rem; font-weight: 600; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mcard .mi span { font-size: 0.7rem; color: var(--cream-3); }
+  .mcard .pct { position: absolute; top: 8px; left: 8px; font: 700 0.62rem/1 var(--body); padding: 5px 7px; border-radius: 999px; background: rgba(29,20,15,.75); color: #f0b27a; backdrop-filter: blur(4px); }
+
+  .wheel-caption { position: absolute; right: var(--gutter); bottom: 6vh; text-align: right; z-index: 3; pointer-events: none; }
+  .wheel-caption small { display: block; font: 600 0.66rem/1 var(--body); letter-spacing: 0.26em; text-transform: uppercase; color: var(--clay); margin-bottom: 8px; }
+  .wheel-caption b { display: block; font: italic 500 1.5rem/1.1 var(--display); }
+  .wheel-caption span { font-size: 0.8rem; color: var(--cream-3); }
+  .drag-hint { position: absolute; left: 62%; bottom: 7vh; font: 600 0.64rem/1 var(--body); letter-spacing: 0.24em; text-transform: uppercase; color: var(--cream-3); display: flex; gap: 8px; align-items: center; z-index: 3; pointer-events: none; }
+
+  /* ---------- craft chapters ---------- */
+  .craft { min-height: 120vh; min-height: 120svh; display: flex; align-items: center; padding: 120px var(--gutter); position: relative; }
+  .craft[data-side="right"] .ccopy { margin-left: auto; }
+  .ccopy { will-change: opacity, transform, filter; max-width: 470px; padding: 34px; border-radius: 28px; background: radial-gradient(closest-side, rgba(29,20,15,.75), rgba(29,20,15,.35) 75%, transparent); }
+  .ccopy .where { font-size: 0.8rem; color: var(--cream-3); display: flex; gap: 14px; margin: 4px 0 16px; }
+  .ccopy .where b { color: var(--cream-2); font-weight: 600; }
+  .ccopy .mini { display: flex; gap: 8px; margin-top: 18px; }
+  .ccopy .mini img { width: 70px; height: 70px; border-radius: 14px; object-fit: cover; border: 1px solid var(--line-d); cursor: pointer; transition: transform .3s; }
+  .ccopy .mini img:hover { transform: translateY(-3px); }
+  .ccopy .row { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+  .rv { opacity: 0; transform: translateY(24px); transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1); transition-delay: calc(var(--d, 0) * 80ms); }
+  .rv.in { opacity: 1; transform: none; }
+
+  /* ---------- shop (light) ---------- */
+  .shop { transform-origin: 50% 0; will-change: transform; position: relative; z-index: 6; background: var(--linen); color: var(--ink); padding: 100px var(--gutter) 90px; border-radius: 36px 36px 0 0; box-shadow: 0 -40px 80px -30px rgba(0,0,0,.6); }
+  .shop .eyebrow { color: var(--clay-deep); }
+  .shop h2 em { color: var(--clay-deep); }
+  .shop .lede { color: var(--ink-2); }
+  .shop-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; flex-wrap: wrap; margin-bottom: 30px; }
+  .shop-wrap { display: grid; grid-template-columns: 280px 1fr; gap: 34px; align-items: start; }
+  [data-mode="classic"] .shop-wrap { grid-template-columns: 240px 1fr; }
+  .side { position: sticky; top: 90px; display: grid; gap: 14px; }
+  .panel { background: var(--card); border: 1px solid var(--line-l); border-radius: 22px; padding: 20px; }
+  .panel h4 { margin: 0 0 4px; font: 600 0.7rem/1 var(--body); letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-3); }
+  .panel p { font-size: 0.8rem; color: var(--ink-2); margin: 6px 0 12px; }
+  .taste { display: grid; gap: 9px; margin-top: 12px; }
+  .taste .t { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; font-size: 0.8rem; }
+  .taste .t span { font-weight: 600; }
+  .taste .t small { color: var(--ink-3); font-size: 0.68rem; }
+  .taste .bar { grid-column: 1 / -1; height: 5px; border-radius: 3px; background: var(--linen-2); overflow: hidden; }
+  .taste .bar i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--clay), #6d7fd6); transition: width .8s cubic-bezier(.2,.7,.2,1); }
+  .taste .empty { font-size: 0.8rem; color: var(--ink-3); }
+  .signals { display: grid; gap: 7px; max-height: 190px; overflow: auto; font-size: 0.76rem; color: var(--ink-2); }
+  .signals div { display: flex; gap: 8px; align-items: baseline; animation: rise .4s both; }
+  .signals div i { font-style: normal; font-weight: 700; color: var(--clay-deep); min-width: 52px; font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; }
+  .linkish { background: none; border: 0; padding: 0; color: var(--clay-deep); font-weight: 600; font-size: 0.78rem; cursor: pointer; }
+  .filters { display: grid; gap: 18px; }
+  .filters .fg b { display: block; font: 600 0.7rem/1 var(--body); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 10px; }
+  .filters label { display: flex; gap: 10px; align-items: center; font-size: 0.86rem; padding: 4px 0; cursor: pointer; }
+  .filters input[type=checkbox] { accent-color: var(--clay); width: 16px; height: 16px; }
+  .filters input[type=range] { width: 100%; accent-color: var(--clay); }
+  .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .toolbar select { height: 40px; border-radius: 12px; border: 1px solid var(--line-l); background: var(--card); padding: 0 12px; font: 500 0.84rem var(--body); color: var(--ink); }
+  .search { height: 40px; border-radius: 12px; border: 1px solid var(--line-l); background: var(--card); padding: 0 14px; font: 500 0.86rem var(--body); min-width: 220px; color: var(--ink); }
+  .count { font-size: 0.82rem; color: var(--ink-3); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+  .card { background: var(--card); border: 1px solid var(--line-l); border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; position: relative; transition: transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s; cursor: pointer; }
+  .card:hover { transform: translateY(-5px); box-shadow: 0 24px 50px -28px rgba(60,30,10,.45); }
+  .card .img { position: relative; aspect-ratio: 1; background: #efe6d8; overflow: hidden; }
+  .card .img img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s cubic-bezier(.2,.7,.2,1); }
+  .card:hover .img img { transform: scale(1.05); }
+  .card .heart { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgba(255,250,242,.9); display: grid; place-items: center; cursor: pointer; color: var(--ink-2); transition: transform .3s cubic-bezier(.3,1.6,.5,1), color .2s; }
+  .card .heart.on { color: #c2412b; transform: scale(1.12); }
+  .card .heart svg { width: 17px; height: 17px; }
+  .card .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .card .craftname { font: 600 0.64rem/1 var(--body); letter-spacing: 0.2em; text-transform: uppercase; color: var(--clay-deep); }
+  .card h3 { font-size: 1.12rem; line-height: 1.2; }
+  .card .who { font-size: 0.76rem; color: var(--ink-3); }
+  .card .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .card .price { font: 600 1rem var(--body); }
+  .card .add { height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line-l); background: none; cursor: pointer; font-weight: 600; font-size: 0.78rem; transition: all .2s; }
+  .card .add:hover { background: var(--ink); color: var(--linen); border-color: var(--ink); }
+  .card .why { display: none; margin-top: 8px; gap: 5px; flex-wrap: wrap; }
+  [data-mode="ai"] .card .why { display: flex; }
+  .card .why span { font-size: 0.68rem; padding: 4px 8px; border-radius: 999px; background: #f4e3d6; color: var(--clay-deep); font-weight: 600; }
+  .card .why span.b { background: #e4e8f7; color: var(--indigo); }
+  .card .match { position: absolute; left: 12px; top: 12px; display: none; font: 700 0.66rem/1 var(--body); padding: 6px 9px; border-radius: 999px; background: rgba(29,20,15,.82); color: #f0b27a; }
+  [data-mode="ai"] .card .match { display: block; }
+  .card.rank1 { grid-column: span 2; grid-row: span 2; }
+  .card.rank1 h3 { font-size: 1.5rem; }
+  [data-mode="classic"] .card.rank1 { grid-column: auto; grid-row: auto; }
+  [data-mode="classic"] .card.rank1 h3 { font-size: 1.12rem; }
+  .dwell { position: absolute; left: 0; bottom: 0; height: 3px; width: 0; background: var(--ai); z-index: 2; }
+  .card.dwelling .dwell { width: 100%; transition: width .9s linear; }
+  [data-mode="classic"] .dwell { display: none; }
+
+  .toast { position: fixed; left: 50%; bottom: 26px; z-index: 60; transform: translate(-50%, 140%); background: var(--walnut); color: var(--cream); border-radius: 18px; padding: 12px 16px 12px 14px; display: flex; gap: 12px; align-items: center; font-size: 0.84rem; box-shadow: 0 20px 50px -18px rgba(0,0,0,.6); transition: transform .5s cubic-bezier(.2,.9,.2,1); max-width: calc(100vw - 32px); }
+  .toast.on { transform: translate(-50%, 0); }
+  .toast .dot { width: 26px; height: 26px; border-radius: 50%; background: var(--ai); flex: none; display: grid; place-items: center; }
+  .toast .dot svg { width: 14px; height: 14px; color: #fff; }
+
+  /* how it works */
+  .how { position: relative; z-index: 6; background: var(--linen); color: var(--ink); padding: 40px var(--gutter) 100px; }
+  .how .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 34px; }
+  .how .grid3 > div { background: var(--card); border: 1px solid var(--line-l); border-radius: 22px; padding: 26px; }
+  .how .grid3 b { display: block; font: 500 1.25rem/1.25 var(--display); margin: 10px 0 8px; }
+  .how .grid3 p { margin: 0; font-size: 0.88rem; color: var(--ink-2); }
+  .how .n { font: 600 0.7rem/1 var(--body); letter-spacing: 0.2em; color: var(--clay-deep); }
+  .how .note { margin-top: 22px; font-size: 0.8rem; color: var(--ink-3); }
+  footer { position: relative; z-index: 6; background: var(--walnut); color: var(--cream-2); padding: 56px var(--gutter) 30px; font-size: 0.84rem; }
+  .fgrid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 30px; }
+  footer h5 { margin: 0 0 12px; font: 600 0.68rem/1 var(--body); letter-spacing: 0.24em; text-transform: uppercase; color: var(--clay); }
+  footer a { display: block; margin-bottom: 8px; }
+  .legal { margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--line-d); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 0.74rem; color: var(--cream-3); }
+
+  /* quick view */
+  .qv { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 20px; background: rgba(15,10,7,.6); backdrop-filter: blur(6px); opacity: 0; visibility: hidden; transition: opacity .35s, visibility .35s; }
+  .qv.on { opacity: 1; visibility: visible; }
+  .qv .box { width: min(880px, 100%); max-height: calc(100vh - 40px); overflow: auto; background: var(--linen); color: var(--ink); border-radius: 28px; display: grid; grid-template-columns: 1fr 1fr; transform: translateY(20px) scale(.98); transition: transform .45s cubic-bezier(.2,.8,.2,1); }
+  .qv.on .box { transform: none; }
+  .qv .box img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 1; }
+  .qv .info { padding: 30px; display: flex; flex-direction: column; gap: 10px; }
+  .qv .info h3 { font-size: 1.9rem; }
+  .qv .info p { margin: 0; color: var(--ink-2); font-size: 0.92rem; }
+  .qv .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .qv .chips span { font-size: 0.72rem; padding: 5px 9px; border-radius: 999px; border: 1px solid var(--line-l); color: var(--ink-2); }
+  .qv .close { position: absolute; top: 18px; right: 18px; }
+
+  @media (max-width: 1100px) {
+    .nav .links { display: none; }
+    .shop-wrap, [data-mode="classic"] .shop-wrap { grid-template-columns: 1fr; }
+    .side { position: static; grid-template-columns: 1fr 1fr; }
+    .fgrid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 760px) {
+    body { font-size: 15px; }
+    .nav { gap: 10px; padding-block: 10px; }
+    .logo small { display: none; }
+    .toggle .lbl i { display: none; }
+    .toggle { padding-left: 10px; }
+    .ibtn.hide-sm { display: none; }
+    .hero { grid-template-columns: 1fr; padding-top: 46vh; align-items: start; }
+    .wheel-caption { top: 12vh; bottom: auto; right: 16px; }
+    .drag-hint { display: none; }
+    .opts { grid-template-columns: 1fr 1fr; }
+    .rail { grid-template-columns: 1fr 1fr; }
+    .craft { align-items: flex-end; min-height: 125svh; }
+    .ccopy { margin-top: 48vh; background: rgba(29,20,15,.72); backdrop-filter: blur(12px); border: 1px solid var(--line-d); padding: 24px; }
+    .side { grid-template-columns: 1fr; }
+    .grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .card.rank1 { grid-column: span 2; grid-row: auto; }
+    .card .body { padding: 10px 12px 12px; }
+    .card h3 { font-size: 0.98rem; }
+    .card .add { padding: 0 10px; height: 32px; }
+    .search { min-width: 0; flex: 1; }
+    .how .grid3 { grid-template-columns: 1fr; }
+    .fgrid { grid-template-columns: 1fr; }
+    .qv .box { grid-template-columns: 1fr; }
+    .shop { border-radius: 26px 26px 0 0; padding-top: 70px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .rv { opacity: 1; transform: none; transition: none; } }
+
+  /* ---------- cinematic hero (full bleed) ---------- */
+  .hero { position: relative; display: block; height: 100vh; height: 100svh; min-height: 640px; padding: 0; }
+  .hero-scrim { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(13,8,6,.55) 0%, transparent 22%, transparent 48%, rgba(13,8,6,.82) 88%, rgba(13,8,6,.4) 100%), linear-gradient(90deg, rgba(13,8,6,.6), transparent 45%); }
+  .hero-title { position: absolute; left: var(--gutter); bottom: calc(5vh + 205px); max-width: 64vw; }
+  .hero-title h1 { font-size: clamp(3.4rem, 8.6vw, 9rem); line-height: 0.92; margin: 18px 0 0; font-weight: 400; letter-spacing: -0.035em; text-shadow: 0 10px 60px rgba(0,0,0,.45); }
+  .hero-title h1 em { font-weight: 400; }
+  .split span { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+  .split span i { display: inline-block; font-style: inherit; transform: translateY(0); transition: transform 1.3s cubic-bezier(.16,1,.3,1); }
+  .split > span:nth-of-type(1) i { transition-delay: .05s; } .split > span:nth-of-type(2) i { transition-delay: .14s; }
+  .split em span:nth-of-type(1) i { transition-delay: .28s; } .split em span:nth-of-type(2) i { transition-delay: .36s; } .split em span:nth-of-type(3) i { transition-delay: .44s; }
+  .intro .split span i { transform: translateY(110%); }
+  .hero-title .eyebrow, .dock, .matches, .wheel-caption, .scroll-cue, .nav { transition: opacity 1.2s ease .5s, transform 1.4s cubic-bezier(.16,1,.3,1) .5s; }
+  .intro .hero-title .eyebrow, .intro .dock, .intro .matches, .intro .wheel-caption, .intro .scroll-cue, .intro .nav { opacity: 0; transform: translateY(18px); }
+  .dock { position: absolute; left: var(--gutter); bottom: 5vh; width: min(700px, calc(100vw - 2 * var(--gutter))); }
+  .askbar { display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 20px; border-radius: 999px; background: rgba(24,16,12,.62); backdrop-filter: blur(18px) saturate(1.2); -webkit-backdrop-filter: blur(18px) saturate(1.2); border: 1px solid rgba(243,230,208,.18); box-shadow: 0 30px 70px -30px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.06); transition: border-color .3s, box-shadow .3s; }
+  .askbar:focus-within { border-color: rgba(217,139,74,.7); box-shadow: 0 0 0 5px rgba(196,103,58,.14), 0 30px 70px -30px rgba(0,0,0,.9); }
+  .askbar .spark { color: #e7a35c; flex: none; }
+  .askbar input { flex: 1; min-width: 0; height: 44px; border: 0; outline: 0; background: none; color: var(--cream); font: 400 1rem var(--body); }
+  .askbar input::placeholder { color: var(--cream-3); }
+  .dock-row { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .quizlink { background: none; border: 0; color: var(--cream-2); font-size: 0.8rem; cursor: pointer; padding: 2px 0; border-bottom: 1px solid rgba(243,230,208,.25); }
+  .quizlink:hover { color: var(--cream); border-color: var(--clay); }
+  .dock .examples { margin-top: 0; }
+  .dock .examples button { background: rgba(20,13,10,.45); backdrop-filter: blur(8px); }
+  .matches { position: absolute; right: var(--gutter); bottom: 5vh; width: min(500px, 40vw); }
+  .matches:not(.on) { display: none !important; }
+  .matches .rail { grid-template-columns: repeat(4, 1fr); }
+  .mcard { background: rgba(24,16,12,.6); backdrop-filter: blur(12px); }
+  .wheel-caption { position: absolute; right: var(--gutter); top: 15vh; bottom: auto; }
+  .scroll-cue { position: absolute; left: 50%; bottom: 2.4vh; transform: translateX(-50%); font: 600 0.6rem/1 var(--body); letter-spacing: .36em; text-transform: uppercase; color: var(--cream-3); display: grid; justify-items: center; gap: 8px; }
+  .scroll-cue i { width: 1px; height: 30px; background: linear-gradient(transparent, var(--clay)); animation: cue 2s ease-in-out infinite; transform-origin: top; }
+  @keyframes cue { 0% { transform: scaleY(0); } 60% { transform: scaleY(1); } 100% { opacity: 0; } }
+  [data-mode="ai"] .matches.on ~ .scroll-cue { display: none; }
+  .live .hero-title, .live .dock, .live .matches, .live .wheel-caption { transition: none; }
+  /* quiz sheet */
+  .sheet { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 20px; background: rgba(10,6,4,.55); backdrop-filter: blur(8px); opacity: 0; visibility: hidden; transition: opacity .35s, visibility .35s; }
+  .sheet.on { opacity: 1; visibility: visible; }
+  .sheet-box { position: relative; width: min(640px, 100%); border-radius: 28px; padding: 30px; background: rgba(36,25,18,.92); border: 1px solid var(--line-d); box-shadow: 0 40px 100px -30px rgba(0,0,0,.9); transform: translateY(16px); transition: transform .5s cubic-bezier(.16,1,.3,1); }
+  .sheet.on .sheet-box { transform: none; }
+  .sheet .close { position: absolute; top: 16px; right: 16px; color: var(--cream); }
+  .sheet .quiz { margin-top: 16px; }
+  /* parade: pinned while the pieces sweep past */
+  .parade { position: relative; height: 320vh; }
+  .parade-pin { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; flex-direction: column; justify-content: space-between; padding: 120px var(--gutter) 6vh; pointer-events: none; }
+  .parade-type h2 { font-size: clamp(3rem, 8vw, 8.6rem); line-height: .92; font-weight: 400; letter-spacing: -0.035em; text-shadow: 0 10px 60px rgba(0,0,0,.5); }
+  .parade-type .lede { max-width: 420px; }
+  .parade-stats { display: flex; gap: 50px; justify-content: flex-end; }
+  .parade-stats b { display: block; font: 400 2.6rem/1 var(--display); }
+  .parade-stats span { font-size: 0.78rem; color: var(--cream-3); }
+  @media (max-width: 760px) {
+    .hero { min-height: 560px; }
+    .hero-title { bottom: auto; top: 50svh; max-width: none; right: var(--gutter); }
+    .hero-title h1 { font-size: clamp(2.9rem, 13vw, 4rem); }
+    .dock { bottom: 3vh; }
+    .askbar { padding-left: 14px; }
+    .askbar .btn { padding: 0 12px; }
+    .dock .examples button:nth-child(n+3) { display: none; }
+    .matches { display: none !important; }
+    .wheel-caption { top: 11vh; }
+    .scroll-cue { display: none; }
+    .parade-stats { gap: 22px; justify-content: flex-start; }
+    .parade-stats b { font-size: 1.7rem; }
+  }
+</style>
+</head>
+<body>
+<canvas id="stage" aria-label="A potter's wheel throwing the selected piece"></canvas>
+<div class="studio-veil"></div>
+
+<header class="nav" id="nav">
+  <a class="logo" href="#top"><svg viewBox="0 0 64 64"><path d="M20 8h24l-3 8c8 5 12 13 12 22 0 12-9 20-21 20S11 50 11 38c0-9 4-17 12-22z" fill="#c4673a"/><path d="M14 36c10 4 26 4 36 0" stroke="#f3e6d0" stroke-width="2.4" fill="none" opacity=".75"/></svg><div>Kaarigar<small>Handmade India</small></div></a>
+  <nav class="links"><a href="#shop">Shop</a><a href="#crafts">Crafts</a><a href="#shop">Gifting</a><a href="#how">How it works</a></nav>
+  <div class="right">
+    <button class="toggle" id="modeToggle" aria-pressed="true" title="Switch between AI concierge and the classic store">
+      <svg class="spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.3L20 10l-5.8 1.7L12 18l-2.2-6.3L4 10l5.8-1.7z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z" opacity=".7"/></svg>
+      <span class="lbl">AI Concierge <i id="modeWord">On</i></span><span class="sw"></span>
+    </button>
+    <button class="ibtn hide-sm" aria-label="Wishlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20s-7-4.4-9-9.2C1.6 7.3 4 4 7.3 4c2 0 3.5 1 4.7 2.6C13.2 5 14.7 4 16.7 4 20 4 22.4 7.3 21 10.8 19 15.6 12 20 12 20z"/></svg><span class="badge" id="wishBadge">0</span></button>
+    <button class="ibtn" aria-label="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 7h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="badge" id="cartBadge">0</span></button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" data-scene="hero" data-side="left">
+    <div class="hero-scrim"></div>
+    <div class="hero-title">
+      <span class="eyebrow">Handmade across India · 1,240 artisans · 38 crafts</span>
+      <h1 class="split"><span><i>Every</i></span> <span><i>piece,</i></span><br><em><span><i>thrown</i></span> <span><i>for</i></span> <span><i>you.</i></span></em></h1>
+    </div>
+    <div class="dock mode-ai">
+      <div class="askbar">
+        <svg class="spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.3L20 10l-5.8 1.7L12 18l-2.2-6.3L4 10l5.8-1.7z"/></svg>
+        <input id="askBox" autocomplete="off" placeholder="Describe the piece you want, the way you'd tell a shopkeeper…">
+        <button class="btn btn-ai btn-sm" id="askGo">Find my piece</button>
+      </div>
+      <div class="dock-row">
+        <div class="examples" id="examples">
+          <button>A Diwali gift for my mother, brass, under ₹4,000</button>
+          <button>Earthy planters for a sunny balcony</button>
+          <button>Something black and silver for my study</button>
+          <button>Bright, playful pieces for a kid's room</button>
+        </div>
+      </div>
+      <div class="dock-row"><button class="quizlink" id="quizOpen">Prefer questions? Take the 4-question quiz →</button></div>
+      <div class="understood" id="understood"></div>
+    </div>
+    <div class="dock mode-classic">
+      <p class="lede">Blue pottery from Jaipur, Dhokra brass from Bastar, lacquer from Channapatna. Paid fairly, shipped with care.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-clay" href="#shop">Shop all pieces</a><a class="btn btn-ghost" href="#crafts">Meet the crafts</a></div>
+      <div class="cat-pills" id="heroCats"></div>
+    </div>
+    <div class="matches mode-ai" id="matches">
+      <div class="mh"><b>Your matches</b><a href="#shop">See all picks →</a></div>
+      <div class="rail" id="rail"></div>
+    </div>
+    <div class="wheel-caption" id="caption"><small id="capKicker">On the wheel</small><b id="capName">Neel Vase</b><span id="capMeta">Blue pottery · Jaipur</span></div>
+    <div class="scroll-cue"><i></i>Scroll</div>
+  </section>
+
+  <div id="crafts"></div>
+  <section class="craft" data-scene="craft:blue" data-side="left">
+    <div class="ccopy"><span class="eyebrow rv">Jaipur, Rajasthan</span><h2 class="rv" style="--d:1">Blue <em>pottery</em></h2><div class="where rv" style="--d:2"><span><b>Clay-free</b> quartz body</span><span><b>Cobalt</b> &amp; turquoise</span></div><p class="lede rv" style="--d:2">Made without clay: quartz, glass and fuller's earth, hand-painted in cobalt and fired once at low heat. Each flower is drawn freehand, so no two pieces repeat.</p><div class="mini rv" style="--d:3" data-craft="Blue Pottery"></div><div class="row rv" style="--d:4"><button class="btn btn-ghost btn-sm" data-shopcraft="Blue Pottery">Shop blue pottery</button></div></div>
+  </section>
+  <section class="craft" data-scene="craft:dhokra" data-side="right">
+    <div class="ccopy"><span class="eyebrow rv">Bastar, Chhattisgarh</span><h2 class="rv" style="--d:1">Dhokra <em>brass</em></h2><div class="where rv" style="--d:2"><span><b>4,000 years</b> old</span><span><b>Lost-wax</b> casting</span></div><p class="lede rv" style="--d:2">Every piece starts as a wax thread wound by hand over a clay core, then cast in molten brass. The mould is broken to free it, so each one is the only one.</p><div class="mini rv" style="--d:3" data-craft="Dhokra"></div><div class="row rv" style="--d:4"><button class="btn btn-ghost btn-sm" data-shopcraft="Dhokra">Shop Dhokra</button></div></div>
+  </section>
+  <section class="craft" data-scene="craft:terracotta" data-side="left">
+    <div class="ccopy"><span class="eyebrow rv">Bankura, West Bengal</span><h2 class="rv" style="--d:1">Terra<em>cotta</em></h2><div class="where rv" style="--d:2"><span><b>River</b> clay</span><span><b>Wood-fired</b> kilns</span></div><p class="lede rv" style="--d:2">Thrown on the wheel from Damodar river clay, burnished by hand and fired in open kilns until it rings. Earthy, breathable, and better with age.</p><div class="mini rv" style="--d:3" data-craft="Terracotta"></div><div class="row rv" style="--d:4"><button class="btn btn-ghost btn-sm" data-shopcraft="Terracotta">Shop terracotta</button></div></div>
+  </section>
+  <section class="craft" data-scene="craft:lacquer" data-side="right">
+    <div class="ccopy"><span class="eyebrow rv">Channapatna, Karnataka</span><h2 class="rv" style="--d:1">Lacquer<em>ware</em></h2><div class="where rv" style="--d:2"><span><b>Ivory-wood</b> lathe</span><span><b>Vegetable</b> dyes</span></div><p class="lede rv" style="--d:2">Turned on a lathe from soft ivory-wood and coloured with lac sticks pressed against the spinning wood. Safe for small hands, bright for a lifetime.</p><div class="mini rv" style="--d:3" data-craft="Channapatna"></div><div class="row rv" style="--d:4"><button class="btn btn-ghost btn-sm" data-shopcraft="Channapatna">Shop lacquerware</button></div></div>
+  </section>
+  <section class="craft" data-scene="craft:black" data-side="left">
+    <div class="ccopy"><span class="eyebrow rv">Nizamabad, Uttar Pradesh</span><h2 class="rv" style="--d:1">Black <em>pottery</em></h2><div class="where rv" style="--d:2"><span><b>Smoke-fired</b> black</span><span><b>Silver</b> etching</span></div><p class="lede rv" style="--d:2">Fired in a sealed kiln with rice husk until the smoke turns the clay jet black, then etched and filled with a silver alloy. Quiet, glossy, dramatic.</p><div class="mini rv" style="--d:3" data-craft="Black Pottery"></div><div class="row rv" style="--d:4"><button class="btn btn-ghost btn-sm" data-shopcraft="Black Pottery">Shop black pottery</button></div></div>
+  </section>
+  <section class="craft" data-scene="craft:textile" data-side="right">
+    <div class="ccopy"><span class="eyebrow rv">Bagru, Rajasthan · Odisha · Bengal</span><h2 class="rv" style="--d:1">Block print, ikat <em>&amp; kantha</em></h2><div class="where rv" style="--d:2"><span><b>Hand-carved</b> blocks</span><span><b>Natural</b> dyes</span></div><p class="lede rv" style="--d:2">Teak blocks pressed by hand in indigo and madder, threads tie-dyed before weaving, old saris layered with running stitch. Textiles you can read like a map.</p><div class="mini rv" style="--d:3" data-craft="Textiles"></div><div class="row rv" style="--d:4"><button class="btn btn-ghost btn-sm" data-shopcraft="Textiles">Shop textiles</button></div></div>
+  </section>
+
+  <section class="parade" id="parade" data-scene="parade" data-side="center">
+    <div class="parade-pin">
+      <div class="parade-type"><span class="eyebrow">The collection</span><h2>38 crafts.<br><em>1,240 pairs of hands.</em></h2><p class="lede">Every piece is made by one person, start to finish. Scroll to walk past a few of them.</p></div>
+      <div class="parade-stats"><div><b>9,000+</b><span>pieces in stock</span></div><div><b>4.8★</b><span>from 21,000 reviews</span></div><div><b>72 hrs</b><span>to dispatch</span></div></div>
+    </div>
+  </section>
+
+  <section class="shop" id="shop">
+    <div class="shop-head">
+      <div>
+        <span class="eyebrow mode-ai">Picked for you · re-ranked as you browse</span>
+        <span class="eyebrow mode-classic">The collection</span>
+        <h2 class="mode-ai">Your <em>shortlist</em></h2>
+        <h2 class="mode-classic">Shop all <em>pieces</em></h2>
+        <p class="lede mode-ai">Ranked from what you told us and what you linger on. Hover a piece for a moment and the list learns.</p>
+        <p class="lede mode-classic">Every piece, every craft. Filter, sort and search the way you always have.</p>
+      </div>
+      <div class="toolbar">
+        <input class="search" id="search" placeholder="Search pieces, crafts, regions">
+        <select id="sort" class="mode-classic"><option value="featured">Featured</option><option value="low">Price: low to high</option><option value="high">Price: high to low</option><option value="new">Newest</option></select>
+        <span class="count" id="count"></span>
+      </div>
+    </div>
+    <div class="shop-wrap">
+      <aside class="side">
+        <div class="panel mode-ai">
+          <h4>Your taste, so far</h4>
+          <p>What the concierge has learned. Nothing leaves your device in this demo.</p>
+          <div class="taste" id="taste"></div>
+          <div style="display:flex;justify-content:space-between;margin-top:14px"><button class="linkish" id="resetTaste">Start over</button><button class="linkish" id="openQuiz">Retake quiz</button></div>
+        </div>
+        <div class="panel mode-ai">
+          <h4>Signals</h4>
+          <p>Every look, like and add, newest first.</p>
+          <div class="signals" id="signals"><div><i>start</i>Browse a little and watch the list re-rank.</div></div>
+        </div>
+        <div class="panel mode-classic filters" id="filters"></div>
+      </aside>
+      <div>
+        <div class="grid" id="grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <span class="eyebrow">How the concierge works</span>
+    <h2>Less searching. <em>More finding.</em></h2>
+    <div class="grid3">
+      <div><span class="n">01 · ASK</span><b>Say it the way you'd say it to a shopkeeper</b><p>"Something calm and blue for the living room, under three thousand." The concierge pulls out craft, colour, room, occasion and budget, and shows you what it understood so you can correct it.</p></div>
+      <div><span class="n">02 · WATCH</span><b>It learns from what you linger on</b><p>Pieces you hover, open, like or add quietly reshape your taste profile. Recent signals count more than old ones, and you can see every one of them.</p></div>
+      <div><span class="n">03 · CHOOSE</span><b>Classic store, one switch away</b><p>Turn the concierge off and the store is a normal catalogue: filters, sort, search. Turn it back on and your shortlist is waiting.</p></div>
+    </div>
+    <p class="note">In production the concierge reads requests with a language model, ranks with product embeddings and live behaviour, and respects consent. This mockup runs a small on-device matcher so it works offline.</p>
+  </section>
+</main>
+
+<footer>
+  <div class="fgrid">
+    <div><a class="logo" href="#top" style="color:var(--cream);margin-bottom:14px"><svg viewBox="0 0 64 64"><path d="M20 8h24l-3 8c8 5 12 13 12 22 0 12-9 20-21 20S11 50 11 38c0-9 4-17 12-22z" fill="#c4673a"/></svg><div>Kaarigar</div></a><p>Handmade pieces from 1,240 artisans across India, paid fairly and shipped with care.</p></div>
+    <div><h5>Shop</h5><a href="#shop">Pottery</a><a href="#shop">Brass &amp; metal</a><a href="#shop">Woodcraft</a><a href="#shop">Textiles</a></div>
+    <div><h5>Gifting</h5><a href="#shop">Diwali</a><a href="#shop">Weddings</a><a href="#shop">Housewarming</a><a href="#shop">Corporate</a></div>
+    <div><h5>Help</h5><a href="#how">How the concierge works</a><a href="#top">Shipping &amp; returns</a><a href="#top">Care guides</a><a href="#top">Contact</a></div>
+  </div>
+  <div class="legal"><span>© 2026 Kaarigar (placeholder brand)</span><span>Design concept · placeholder catalogue and prices</span></div>
+</footer>
+
+<div class="qv" id="qv"><div class="box" style="position:relative"><img id="qvImg" alt=""><div class="info"><span class="eyebrow" id="qvCraft"></span><h3 id="qvName"></h3><span class="who" id="qvWho" style="font-size:.84rem;color:var(--ink-3)"></span><p id="qvDesc"></p><div class="chips" id="qvChips"></div><div style="display:flex;gap:10px;align-items:center;margin-top:auto;padding-top:14px"><b id="qvPrice" style="font-size:1.3rem"></b><button class="btn btn-clay btn-sm" id="qvAdd">Add to cart</button><button class="btn btn-sm" id="qvWheel" style="border:1px solid var(--line-l)">Put it on the wheel</button></div></div><button class="ibtn close" id="qvClose" aria-label="Close" style="color:var(--ink)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
+<div class="sheet" id="quizSheet"><div class="sheet-box"><button class="ibtn close" id="quizClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button><span class="eyebrow">Four quick questions</span><div class="quiz" id="quiz"></div></div></div>
+<div class="toast" id="toast"><span class="dot"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.3L20 10l-5.8 1.7L12 18l-2.2-6.3L4 10l5.8-1.7z"/></svg></span><span id="toastText"></span></div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
