@@ -292,6 +292,16 @@
     .qv .box { grid-template-columns: 1fr; }
     .shop { border-radius: 26px 26px 0 0; padding-top: 70px; }
   }
+  html, body { overflow-x: clip; }
+  .parade-pin { overflow: hidden; }
+  @media (max-width: 440px) {
+    .nav { gap: 8px; padding-inline: 14px; }
+    .logo { font-size: 1.12rem; gap: 7px; } .logo svg { width: 24px; height: 24px; }
+    .nav .right { gap: 6px; }
+    .toggle { gap: 6px; padding: 4px 4px 4px 9px; } .toggle .lbl { font-size: 0.7rem; }
+    .toggle .sw { width: 40px; height: 24px; } .toggle .sw::after { width: 18px; height: 18px; } [data-mode="ai"] .toggle .sw::after { transform: translateX(16px); }
+    .ibtn { width: 36px; height: 36px; }
+  }
   @media (prefers-reduced-motion: reduce) { .rv { opacity: 1; transform: none; transition: none; } }
 
   /* ---------- cinematic hero (full bleed) ---------- */
