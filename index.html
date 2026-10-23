@@ -8,6 +8,8 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#1d140f">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M20 8h24l-3 8c8 5 12 13 12 22 0 12-9 20-21 20S11 50 11 38c0-9 4-17 12-22z' fill='%23c4673a'/></svg>">
+<link rel="modulepreload" href="dist/app.min.js">
+<link rel="preload" as="image" href="assets/poster.jpg" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700&display=swap">
@@ -30,7 +32,9 @@
   button { font: inherit; color: inherit; }
   img { display: block; max-width: 100%; }
 
-  #stage { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100lvh; display: block; z-index: 0; touch-action: pan-y; }
+  .poster { position: fixed; inset: 0; z-index: 0; background: #0d0806 url(assets/poster.jpg) center / cover no-repeat; }
+  #stage { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100lvh; display: block; z-index: 0; touch-action: pan-y; opacity: 0; transition: opacity 1.4s ease; }
+  .gl-on #stage { opacity: 1; }
   .studio-veil { position: fixed; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(90% 70% at 50% 40%, transparent 50%, rgba(10, 6, 4, 0.55)); }
 
   /* ---------- nav ---------- */
@@ -356,6 +360,7 @@
 </style>
 </head>
 <body>
+<div class="poster" aria-hidden="true"></div>
 <canvas id="stage" aria-label="A potter's wheel throwing the selected piece"></canvas>
 <div class="studio-veil"></div>
 
@@ -499,12 +504,6 @@
 <div class="sheet" id="quizSheet"><div class="sheet-box"><button class="ibtn close" id="quizClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button><span class="eyebrow">Four quick questions</span><div class="quiz" id="quiz"></div></div></div>
 <div class="toast" id="toast"><span class="dot"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.2 6.3L20 10l-5.8 1.7L12 18l-2.2-6.3L4 10l5.8-1.7z"/></svg></span><span id="toastText"></span></div>
 
-<script type="importmap">
-{ "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-} }
-</script>
-<script type="module" src="app.js"></script>
+<script type="module" src="dist/app.min.js"></script>
 </body>
 </html>

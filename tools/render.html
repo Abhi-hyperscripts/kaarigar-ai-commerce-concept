@@ -1,0 +1,9 @@
+<!doctype html><meta charset="utf-8"><title>render product photos</title>
+<script type="importmap">{ "imports": { "three": "../node_modules/three/build/three.module.js", "three/addons/": "../node_modules/three/examples/jsm/" } }</script>
+<script type="module">
+  // Renders every catalogue piece on the linen sweep. Run by tools/render.js; the shop then loads the saved files.
+  import { photograph } from '../studio.js';
+  import { PRODUCTS } from '../catalog.js';
+  window.__render = async () => { const shots = await photograph(PRODUCTS, 560); return shots; };
+  window.__ready = true;
+</script>

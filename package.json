@@ -1,0 +1,6 @@
+{
+  "name": "kaarigar-ai-commerce-concept",
+  "private": true,
+  "scripts": { "build": "esbuild app.js --bundle --minify --format=esm --target=es2020 --legal-comments=none --outfile=dist/app.min.js" },
+  "devDependencies": { "esbuild": "0.24.0", "three": "0.160.0" }
+}
